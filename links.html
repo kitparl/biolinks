@@ -26,7 +26,7 @@
 
   *{box-sizing:border-box; margin:0; padding:0; -webkit-tap-highlight-color:transparent;}
   html{ -webkit-text-size-adjust:100%; text-size-adjust:100%; }
-  html,body{ background:var(--bg); color:var(--ink); min-height:100%; min-height:100dvh; overflow-x:hidden; overscroll-behavior-y:none;}
+  html,body{ background:var(--bg); color:var(--ink); min-height:100%; min-height:100dvh; overflow-x:hidden;}
   body{
     font-family:'Inter', system-ui, sans-serif;
     background-image:
@@ -227,10 +227,9 @@
     border:1px solid var(--hairline);
     border-radius:12px;
     padding:12px 14px;
-    display:flex;
-    flex-direction:column;
   }
   .mini-term-row{ display:flex; align-items:center; gap:8px; flex-shrink:0; }
+  .mini-term-row, #cmd-form{ margin:0; border:none; padding:0; background:transparent; }
   .mini-term-row .prompt{ color:var(--add); flex-shrink:0; }
   #cmd-input{
     flex:1; min-width:0;
@@ -241,14 +240,16 @@
   #cmd-input::placeholder{ color:var(--muted-dim); }
 
   #cmd-output{
-    max-height:min(280px, 42vh);
+    max-height:280px;
     overflow-y:auto;
+    overflow-x:hidden;
     margin-bottom:10px;
     padding-bottom:10px;
     border-bottom:1px solid var(--hairline);
     -webkit-overflow-scrolling:touch;
   }
   #cmd-output:empty{
+    display:none;
     margin-bottom:0;
     padding-bottom:0;
     border-bottom:none;
@@ -271,6 +272,11 @@
 
   .footer-hint{
     text-align:center; margin-top:12px; font-size:11px; color:var(--muted-dim);
+  }
+
+  .sr-only{
+    position:absolute; width:1px; height:1px; padding:0; margin:-1px;
+    overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0;
   }
 
   @media (max-width:380px){
@@ -462,11 +468,12 @@
     </div>
     <div class="footer">
       <div class="mini-term">
-        <div id="cmd-output"></div>
-        <div class="mini-term-row">
+        <div id="cmd-output" tabindex="-1" aria-live="polite"></div>
+        <form id="cmd-form" class="mini-term-row" autocomplete="off">
           <span class="prompt">$</span>
-          <input id="cmd-input" type="text" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="type 'help' or 'about' and hit enter" inputmode="text">
-        </div>
+          <input id="cmd-input" type="text" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="type 'help' or 'about' and hit enter" inputmode="text" enterkeyhint="go">
+          <button type="submit" class="sr-only" tabindex="-1" aria-hidden="true">run</button>
+        </form>
       </div>
       <div class="footer-hint">profile data as of 11 July 2026</div>
     </div>
@@ -504,6 +511,9 @@
   }
 
   boot.addEventListener('click', finishBoot);
+  boot.addEventListener('wheel', finishBoot, { passive: true });
+  boot.addEventListener('touchmove', finishBoot, { passive: true });
+  boot.addEventListener('keydown', finishBoot);
   revealLines();
 
   // ---------- uptime joke rotator ----------
@@ -720,15 +730,30 @@
   let histIndex = -1;
   const completions = Object.keys(commands).concat(['echo','sudo','history','exit','clear']);
 
+  function submitCommand(){
+    const val = cmdInput.value;
+    if (val.trim() === '') return;
+    history.push(val);
+    histIndex = history.length;
+    runCommand(val);
+    cmdInput.value = '';
+  }
+
+  let lastSubmitAt = 0;
+  function handleSubmit(e){
+    if (e) e.preventDefault();
+    const now = Date.now();
+    if (now - lastSubmitAt < 250) return;
+    lastSubmitAt = now;
+    submitCommand();
+  }
+
+  document.getElementById('cmd-form').addEventListener('submit', handleSubmit);
+
   cmdInput.addEventListener('keydown', (e) => {
     if (e.key === 'Enter'){
-      const val = cmdInput.value;
-      if (val.trim() !== ''){
-        history.push(val);
-        histIndex = history.length;
-        runCommand(val);
-        cmdInput.value = '';
-      }
+      e.preventDefault();
+      handleSubmit();
     } else if (e.key === 'ArrowUp'){
       e.preventDefault();
       if (histIndex > 0){ histIndex--; cmdInput.value = history[histIndex]; }
