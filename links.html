@@ -1,0 +1,752 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#0D1210">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>Pranshu Singh Bisht — links</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap');
+
+  :root{
+    --bg:#0D1210;
+    --bg-card:#141C18;
+    --bg-card-hover:#182019;
+    --ink:#EDEDE4;
+    --muted:#8FA096;
+    --muted-dim:#5B6B61;
+    --add:#7FE0A3;
+    --add-dim:#4F8F68;
+    --rust:#E08A5B;
+    --hairline:rgba(237,237,228,0.09);
+    --line:rgba(127,224,163,0.28);
+  }
+
+  *{box-sizing:border-box; margin:0; padding:0; -webkit-tap-highlight-color:transparent;}
+  html{ -webkit-text-size-adjust:100%; text-size-adjust:100%; }
+  html,body{ background:var(--bg); color:var(--ink); min-height:100%; min-height:100dvh; overflow-x:hidden; overscroll-behavior-y:none;}
+  body{
+    font-family:'Inter', system-ui, sans-serif;
+    background-image:
+      radial-gradient(circle at 15% 0%, rgba(127,224,163,0.06), transparent 45%),
+      radial-gradient(circle at 90% 25%, rgba(224,138,91,0.05), transparent 40%);
+    -webkit-font-smoothing:antialiased;
+  }
+
+  /* ================= BOOT OVERLAY ================= */
+
+  #boot{
+    position:fixed; inset:0;
+    height:100vh; height:100dvh;
+    background:var(--bg);
+    z-index:50;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:20px;
+    padding-left:max(20px, env(safe-area-inset-left));
+    padding-right:max(20px, env(safe-area-inset-right));
+    cursor:pointer;
+    transition:opacity .5s ease, transform .5s ease;
+    -webkit-tap-highlight-color:transparent;
+  }
+  #boot.hide{
+    opacity:0;
+    transform:scale(1.02);
+    pointer-events:none;
+  }
+
+  .term{
+    width:100%;
+    max-width:420px;
+    font-family:'JetBrains Mono', monospace;
+    font-size:14px;
+    line-height:1.85;
+  }
+
+  .term-bar{
+    display:flex;
+    gap:6px;
+    margin-bottom:16px;
+  }
+  .term-dot{ width:9px; height:9px; border-radius:50%; background:var(--hairline); }
+  .term-dot:nth-child(1){ background:#E08A5B; opacity:.6; }
+  .term-dot:nth-child(2){ background:#E0C85B; opacity:.6; }
+  .term-dot:nth-child(3){ background:var(--add); opacity:.6; }
+
+  #boot-lines .line{ opacity:0; color:var(--muted); white-space:pre-wrap; }
+  #boot-lines .line .ok{ color:var(--add); }
+  #boot-lines .line .cmd{ color:var(--ink); }
+  #boot-lines .line.show{ opacity:1; }
+
+  .skip-hint{
+    margin-top:22px;
+    font-size:11px;
+    color:var(--muted-dim);
+    opacity:0;
+    transition:opacity .4s ease .3s;
+  }
+  .skip-hint.show{ opacity:1; }
+
+  .caret{
+    display:inline-block;
+    width:7px; height:13px;
+    background:var(--add);
+    vertical-align:middle;
+    margin-left:1px;
+    animation:blink 1s step-end infinite;
+  }
+  @keyframes blink{ 50%{ opacity:0; } }
+
+  /* ================= MAIN PAGE ================= */
+
+  #main{
+    display:flex;
+    justify-content:center;
+    padding:40px 16px 48px;
+    padding-top:max(40px, calc(env(safe-area-inset-top) + 20px));
+    padding-bottom:max(48px, calc(env(safe-area-inset-bottom) + 32px));
+    padding-left:max(16px, env(safe-area-inset-left));
+    padding-right:max(16px, env(safe-area-inset-right));
+    opacity:0;
+    transform:translateY(14px);
+    transition:opacity .6s ease, transform .6s ease;
+  }
+  #main.show{ opacity:1; transform:translateY(0); }
+
+  .page{ width:100%; max-width:460px; }
+
+  @media (min-width:480px){
+    #main{ padding-top:64px; padding-bottom:80px; }
+  }
+
+  .branch{
+    display:inline-flex; align-items:center; gap:7px;
+    font-family:'JetBrains Mono', monospace; font-size:12px; letter-spacing:0.02em;
+    color:var(--add);
+    background:rgba(127,224,163,0.08);
+    border:1px solid rgba(127,224,163,0.22);
+    padding:4px 10px 4px 8px; border-radius:20px; margin-bottom:22px;
+  }
+  .branch::before{ content:""; width:6px; height:6px; border-radius:50%; background:var(--add); box-shadow:0 0 8px var(--add); flex-shrink:0; }
+
+  .avatar-row{ display:flex; align-items:center; gap:12px; margin-bottom:18px; }
+  .avatar{
+    width:52px; height:52px; border-radius:12px;
+    background:linear-gradient(135deg, #1F2B24, #0D1210);
+    border:1px solid var(--hairline);
+    display:flex; align-items:center; justify-content:center;
+    font-family:'JetBrains Mono', monospace; font-weight:700; font-size:18px; color:var(--add);
+    flex-shrink:0;
+  }
+  .name{
+    font-family:'JetBrains Mono', monospace; font-weight:800;
+    font-size:clamp(30px, 8vw, 38px); letter-spacing:-0.02em; line-height:1.05; color:var(--ink);
+  }
+
+  .tagline{ margin-top:10px; font-family:'JetBrains Mono', monospace; font-size:14.5px; color:var(--muted); line-height:1.5; }
+  .tagline .kw{ color:var(--rust); }
+  .tagline .str{ color:var(--add); }
+
+  .meta-line{ font-family:'JetBrains Mono', monospace; font-size:11.5px; color:var(--muted-dim); margin-top:8px; }
+  .meta-line:first-of-type{ margin-top:16px; }
+  .meta-line span{ color:var(--muted); }
+  #uptime-line{ cursor:pointer; -webkit-tap-highlight-color:transparent; }
+  #uptime-txt{ color:var(--add-dim); border-bottom:1px dashed var(--hairline); padding-bottom:1px; }
+  #uptime-line:active #uptime-txt{ color:var(--add); }
+
+  hr.rule{ border:none; height:1px; background:var(--hairline); margin:26px 0 8px; }
+
+  .log{ position:relative; margin-top:10px; }
+  .commit{ position:relative; padding:0 0 0 30px; opacity:0; transform:translateX(-6px); animation:cardIn .5s ease forwards; }
+  .commit:nth-child(1){ animation-delay:.05s; }
+  .commit:nth-child(2){ animation-delay:.15s; }
+  .commit:nth-child(3){ animation-delay:.25s; }
+  .commit:nth-child(4){ animation-delay:.35s; }
+  .commit:nth-child(5){ animation-delay:.45s; }
+  .commit:nth-child(6){ animation-delay:.55s; }
+  @keyframes cardIn{ to{ opacity:1; transform:translateX(0); } }
+
+  .commit .graph{ position:absolute; left:0; top:0; bottom:0; width:20px; display:flex; justify-content:center; }
+  .commit .graph::before{ content:""; position:absolute; top:22px; bottom:-4px; width:1.5px; background:var(--line); }
+  .commit:last-child .graph::before{ display:none; }
+
+  .dot{
+    position:absolute; top:20px; width:9px; height:9px; border-radius:50%;
+    background:var(--add); box-shadow:0 0 0 4px var(--bg), 0 0 10px rgba(127,224,163,0.5); z-index:2;
+  }
+
+  a.card{
+    display:block; text-decoration:none; color:inherit;
+    background:var(--bg-card); border:1px solid var(--hairline); border-radius:12px;
+    padding:16px 16px 15px; margin-bottom:14px;
+    min-height:44px;
+    transition:transform .16s ease, border-color .16s ease, background .16s ease;
+  }
+  a.card:hover, a.card:focus-visible{
+    background:var(--bg-card-hover); border-color:rgba(127,224,163,0.35);
+    transform:translateX(3px); outline:none;
+  }
+  a.card:focus-visible{ box-shadow:0 0 0 2px rgba(127,224,163,0.4); }
+  a.card:active{
+    background:var(--bg-card-hover); border-color:rgba(127,224,163,0.4);
+    transform:scale(0.98);
+  }
+  a.card:active .arrow{ color:var(--add); transform:translateX(2px); }
+
+  .card-top{ display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:9px; }
+  .card-left{ display:flex; align-items:center; gap:9px; }
+  .icon{
+    width:26px; height:26px; border-radius:7px;
+    display:flex; align-items:center; justify-content:center;
+    font-family:'JetBrains Mono', monospace; font-size:13px; font-weight:700;
+    background:rgba(127,224,163,0.09);
+    color:var(--add);
+    flex-shrink:0;
+  }
+  .icon.rust{ background:rgba(224,138,91,0.12); color:var(--rust); }
+  .hash{ font-family:'JetBrains Mono', monospace; font-size:12px; color:var(--add-dim); letter-spacing:0.02em; flex-shrink:0; }
+  .arrow{ font-family:'JetBrains Mono', monospace; color:var(--muted-dim); font-size:13px; transition:transform .16s ease, color .16s ease; }
+  a.card:hover .arrow{ color:var(--add); transform:translateX(2px); }
+
+  .msg{ font-family:'JetBrains Mono', monospace; font-size:15px; font-weight:600; color:var(--ink); line-height:1.4; }
+  .msg .tag{ color:var(--rust); font-weight:700; }
+  .sub{ margin-top:6px; font-size:13px; color:var(--muted); line-height:1.4; }
+
+  .stat-row{ margin-top:11px; display:flex; align-items:center; gap:10px; font-family:'JetBrains Mono', monospace; font-size:11px; color:var(--muted-dim); }
+  .stat-row .bars{ display:flex; gap:1px; }
+  .bar{ width:3px; height:9px; border-radius:1px; background:var(--hairline); }
+  .bar.on{ background:var(--add-dim); }
+
+  .footer{ margin-top:28px; font-family:'JetBrains Mono', monospace; font-size:12.5px; }
+
+  .mini-term{
+    background:var(--bg-card);
+    border:1px solid var(--hairline);
+    border-radius:12px;
+    padding:12px 14px;
+    display:flex;
+    flex-direction:column;
+  }
+  .mini-term-row{ display:flex; align-items:center; gap:8px; flex-shrink:0; }
+  .mini-term-row .prompt{ color:var(--add); flex-shrink:0; }
+  #cmd-input{
+    flex:1; min-width:0;
+    background:transparent; border:none; outline:none;
+    color:var(--ink); font-family:'JetBrains Mono', monospace; font-size:13px;
+    caret-color:var(--add);
+  }
+  #cmd-input::placeholder{ color:var(--muted-dim); }
+
+  #cmd-output{
+    max-height:min(280px, 42vh);
+    overflow-y:auto;
+    margin-bottom:10px;
+    padding-bottom:10px;
+    border-bottom:1px solid var(--hairline);
+    -webkit-overflow-scrolling:touch;
+  }
+  #cmd-output:empty{
+    margin-bottom:0;
+    padding-bottom:0;
+    border-bottom:none;
+  }
+  #cmd-output .out-line{
+    color:var(--muted); padding:2px 0 0 0; line-height:1.55;
+    white-space:pre-wrap; word-break:break-word;
+    animation:cardIn .25s ease forwards;
+  }
+  #cmd-output .out-line.echo{ color:var(--muted-dim); }
+  #cmd-output .out-line.echo::before{ content:"$ "; color:var(--add-dim); }
+  #cmd-output .out-line.tight{ padding-top:1px; }
+  #cmd-output .out-line.ascii{ color:var(--add); line-height:1.25; padding-top:1px; }
+  #cmd-output .out-line.err{ color:var(--rust); }
+  #cmd-output .out-line .k{ color:var(--add); }
+  #cmd-output .out-line .v{ color:var(--ink); }
+  #cmd-output .out-line .accent{ color:var(--rust); }
+  #cmd-output .out-line a{ color:var(--add); text-decoration:none; border-bottom:1px dashed var(--add-dim); }
+  #cmd-output .out-line a:active{ color:var(--ink); }
+
+  .footer-hint{
+    text-align:center; margin-top:12px; font-size:11px; color:var(--muted-dim);
+  }
+
+  @media (max-width:380px){
+    .msg{ font-size:14px; }
+    .name{ font-size:26px; }
+    .avatar{ width:46px; height:46px; font-size:16px; }
+    .term{ font-size:13px; }
+    .sub{ font-size:12.5px; }
+  }
+
+  @media (hover:none){
+    a.card:hover{ transform:none; background:var(--bg-card); border-color:var(--hairline); }
+    a.card:hover .arrow{ color:var(--muted-dim); transform:none; }
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    .footer .cursor, .caret{ animation:none; }
+    a.card, #boot, #main{ transition:none; }
+    .commit{ animation:none; opacity:1; transform:none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ============ BOOT SEQUENCE ============ -->
+<div id="boot">
+  <div class="term">
+    <div class="term-bar">
+      <span class="term-dot"></span><span class="term-dot"></span><span class="term-dot"></span>
+    </div>
+    <div id="boot-lines">
+      <div class="line">$ <span class="cmd">whoami</span></div>
+      <div class="line">&gt; loading profile<span class="ok">.....</span><span class="ok">ok</span></div>
+      <div class="line">&gt; mounting projects<span class="ok">.....</span><span class="ok">ok</span></div>
+      <div class="line">&gt; checking for bugs<span class="ok">.....</span><span class="ok">none found (they're hiding)</span></div>
+      <div class="line">&gt; compiling human<span class="ok">.....</span><span class="ok">done</span></div>
+      <div class="line">$ <span class="cmd">./enter.sh</span><span class="caret"></span></div>
+    </div>
+    <div class="skip-hint">tap anywhere to continue</div>
+  </div>
+</div>
+
+<!-- ============ MAIN PAGE ============ -->
+<div id="main">
+  <div class="page">
+
+    <div class="branch">HEAD &rarr; main</div>
+
+    <div class="avatar-row">
+      <div class="avatar">AS</div>
+      <div class="name">Pranshu Singh Bisht</div>
+    </div>
+
+    <div class="tagline">
+      <span class="kw">const</span> dev = <span class="str">"builds things, ships fast"</span>;
+    </div>
+
+    <div class="meta-line">
+      author <span>Pranshu Singh Bisht &lt;pranshu.java@gmail.com&gt;</span> · commits <span>6</span> · status <span style="color:var(--add)">clean</span>
+    </div>
+    <div class="meta-line" id="uptime-line">$ uptime &rarr; <span id="uptime-txt">awake for 4 days, running on coffee</span></div>
+
+    <hr class="rule">
+
+    <div class="log">
+
+      <div class="commit">
+        <div class="graph"></div>
+        <div class="dot"></div>
+        <a class="card" href="https://kitparl.github.io/kitparl/" target="_blank" rel="noopener">
+          <div class="card-top">
+            <div class="card-left">
+              <span class="icon">&lt;/&gt;</span>
+              <span class="hash">a3f9c21</span>
+            </div>
+            <span class="arrow">&#8599;</span>
+          </div>
+          <div class="msg"><span class="tag">feat(site):</span> personal website & now page</div>
+          <div class="sub">just about me and a portfolio</div>
+          <div class="stat-row">
+            <span class="bars"><span class="bar on"></span><span class="bar on"></span><span class="bar on"></span><span class="bar on"></span><span class="bar"></span></span>
+            <span>website</span>
+          </div>
+        </a>
+      </div>
+
+      <div class="commit">
+        <div class="graph"></div>
+        <div class="dot"></div>
+        <a class="card" href="https://blogs.bhosdike.tech/" target="_blank" rel="noopener">
+          <div class="card-top">
+            <div class="card-left">
+              <span class="icon">&#9998;</span>
+              <span class="hash">7c1e08b</span>
+            </div>
+            <span class="arrow">&#8599;</span>
+          </div>
+          <div class="msg"><span class="tag">docs(blog):</span> writing on code, craft & lessons</div>
+          <div class="sub">personal platform for articles</div>
+          <div class="stat-row">
+            <span class="bars"><span class="bar on"></span><span class="bar on"></span><span class="bar"></span><span class="bar"></span><span class="bar"></span></span>
+            <span>blog</span>
+          </div>
+        </a>
+      </div>
+
+      <div class="commit">
+        <div class="graph"></div>
+        <div class="dot"></div>
+        <a class="card" href="https://lifeos.bhosdike.tech/" target="_blank" rel="noopener">
+          <div class="card-top">
+            <div class="card-left">
+              <span class="icon rust">&#9881;</span>
+              <span class="hash">f42b9d0</span>
+            </div>
+            <span class="arrow">&#8599;</span>
+          </div>
+          <div class="msg"><span class="tag">feat(tool):</span> shipped MyTool lifeos v1.0</div>
+          <div class="sub">ai driven personal productivity tool</div>
+          <div class="stat-row">
+            <span class="bars"><span class="bar on"></span><span class="bar on"></span><span class="bar on"></span><span class="bar on"></span><span class="bar on"></span></span>
+            <span>product</span>
+          </div>
+        </a>
+      </div>
+
+      
+      <div class="commit">
+        <div class="graph"></div>
+        <div class="dot"></div>
+        <a class="card" href="https://github.com/kitparl" target="_blank" rel="noopener">
+          <div class="card-top">
+            <div class="card-left">
+              <span class="icon">&#8942;</span>
+              <span class="hash">2d6a7e4</span>
+            </div>
+            <span class="arrow">&#8599;</span>
+          </div>
+          <div class="msg"><span class="tag">chore(repo):</span> open-source work & portfolio</div>
+          <div class="sub">@kitparl — neovim configs, articles, and side projects</div>
+          <div class="stat-row">
+            <span class="bars"><span class="bar on"></span><span class="bar on"></span><span class="bar"></span><span class="bar"></span><span class="bar"></span></span>
+            <span>github</span>
+          </div>
+        </a>
+      </div>
+     
+      <div class="commit">
+        <div class="graph"></div>
+        <div class="dot"></div>
+        <a class="card" href="https://www.linkedin.com/in/pranshusinghbisht/" target="_blank" rel="noopener">
+          <div class="card-top">
+            <div class="card-left">
+              <span class="icon rust">in</span>
+              <span class="hash">918cf3a</span>
+            </div>
+            <span class="arrow">&#8599;</span>
+          </div>
+          <div class="msg"><span class="tag">feat(network):</span> connect on linkedin</div>
+          <div class="sub">backend engineer · payments & fintech — let's talk shop</div>
+          <div class="stat-row">
+            <span class="bars"><span class="bar on"></span><span class="bar on"></span><span class="bar on"></span><span class="bar"></span><span class="bar"></span></span>
+            <span>linkedin</span>
+          </div>
+        </a>
+      </div>
+ 
+      <div class="commit">
+        <div class="graph"></div>
+        <div class="dot"></div>
+        <a class="card" href="https://wa.me/917522023037" target="_blank" rel="noopener">
+          <div class="card-top">
+            <div class="card-left">
+              <span class="icon">&#9993;</span>
+              <span class="hash">b4e21a7</span>
+            </div>
+            <span class="arrow">&#8599;</span>
+          </div>
+          <div class="msg"><span class="tag">feat(chat):</span> ping me on whatsapp</div>
+          <div class="sub">fastest way to reach me — no rings, just texts</div>
+          <div class="stat-row">
+            <span class="bars"><span class="bar on"></span><span class="bar on"></span><span class="bar on"></span><span class="bar on"></span><span class="bar on"></span></span>
+            <span>whatsapp</span>
+          </div>
+        </a>
+      </div>
+
+
+    </div>
+    <div class="footer">
+      <div class="mini-term">
+        <div id="cmd-output"></div>
+        <div class="mini-term-row">
+          <span class="prompt">$</span>
+          <input id="cmd-input" type="text" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="type 'help' or 'about' and hit enter" inputmode="text">
+        </div>
+      </div>
+      <div class="footer-hint">profile data as of 11 July 2026</div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  const lines = document.querySelectorAll('#boot-lines .line');
+  const skipHint = document.querySelector('.skip-hint');
+  const boot = document.getElementById('boot');
+  const main = document.getElementById('main');
+  let finished = false;
+  let timers = [];
+
+  function revealLines(){
+    lines.forEach((line, i) => {
+      timers.push(setTimeout(() => {
+        line.classList.add('show');
+        if (i === lines.length - 1){
+          skipHint.classList.add('show');
+          timers.push(setTimeout(finishBoot, 1400));
+        }
+      }, i * 420));
+    });
+  }
+
+  function finishBoot(){
+    if (finished) return;
+    finished = true;
+    timers.forEach(t => clearTimeout(t));
+    boot.classList.add('hide');
+    main.classList.add('show');
+    setTimeout(() => { boot.style.display = 'none'; }, 550);
+  }
+
+  boot.addEventListener('click', finishBoot);
+  revealLines();
+
+  // ---------- uptime joke rotator ----------
+  const uptimeTxt = document.getElementById('uptime-txt');
+  const uptimeLine = document.getElementById('uptime-line');
+  const uptimeJokes = [
+    "awake for 4 days, running on coffee",
+    "0 bugs in prod (that I know of)",
+    "last deploy: 'it works on my machine'",
+    "currently overthinking a button's border-radius",
+    "mood: shipping",
+    "typing speed: 90wpm, thinking speed: unknown"
+  ];
+  let uptimeI = 0;
+  uptimeLine.addEventListener('click', () => {
+    uptimeI = (uptimeI + 1) % uptimeJokes.length;
+    uptimeTxt.textContent = uptimeJokes[uptimeI];
+  });
+
+  // ---------- interactive mini terminal ----------
+  const cmdInput = document.getElementById('cmd-input');
+  const cmdOutput = document.getElementById('cmd-output');
+
+  const jokes = [
+    "why do programmers prefer dark mode? because light attracts bugs.",
+    "there are 10 kinds of people: those who understand binary and those who don't.",
+    "I told a joke about UDP. you might not get it.",
+    "!false — it's funny because it's true.",
+    "a SQL query walks into a bar, walks up to two tables and asks: 'may I join you?'",
+    "it works on my machine ¯\\_(ツ)_/¯"
+  ];
+
+  // --- edit these to make the terminal truly yours ---
+  const ME = {
+    name: "Pranshu Singh Bisht",
+    role: "Backend Engineer · Payments & Fintech Infra",
+    location: "Bangalore, India",
+    years: "3+ yrs",
+    email: "pranshu.bisht.java@gmail.com",
+    whatsapp: "https://wa.me/917522023037",
+    github: "https://github.com/kitparl",
+    linkedin: "https://www.linkedin.com/in/pranshusinghbisht/",
+    dataAsOf: "11 July 2026",
+    summary: "Backend engineer with 3+ years building production-grade payments infrastructure — wallet ledgers, multi-gateway integrations, refund pipelines, and Kafka-driven event systems on Node.js, TypeScript/NestJS, Kafka & Kubernetes.",
+    skills: {
+      "Backend":   "Node.js, TypeScript, NestJS, Express, Java, Spring Boot, FastAPI",
+      "Infra/Msg": "Kafka, AWS SQS, RabbitMQ, Jenkins, AWS (EC2/S3/SQS), Kubernetes",
+      "Databases": "MySQL, MongoDB",
+      "Payments":  "Razorpay, Juspay, Cashfree, GoKwik, AU Small Finance Bank"
+    },
+    experience: [
+      { co: "Aditya Birla Digital Fashion (TMRW)", role: "Backend Engineer", when: "Aug 2025 – Present", loc: "Bangalore", points: [
+        "Multi-tenant refund & transaction system across 8 Shopify brands",
+        "Integrated 4 gateways (Cashfree, Juspay, Razorpay, GoKwik) + webhooks",
+        "Wallet ledger from scratch — 15L+ entries at peak, ~7L+/day steady",
+        "Kafka retry consumers cut daily refund failures ~1,200 → near-zero (>99%)"
+      ]},
+      { co: "Techfino Capital Pvt Ltd", role: "Backend Engineer", when: "Apr 2023 – Jul 2025", loc: "Bangalore", points: [
+        "Built Loan Management System — disbursement, collections, EMI scheduling",
+        "Automated disbursement ₹40–70L daily via AU Bank & CNB integrations",
+        "Collection links: 10L+ monthly EMI payments through Razorpay",
+        "Open API framework — cut partner integration time by 80%"
+      ]}
+    ],
+    education: [
+      { deg: "MCA (Computers)", school: "Chandigarh University", when: "2022 – 2024" },
+      { deg: "BSc", school: "Lucknow Christian Degree College", when: "2018 – 2021" }
+    ],
+    whatsappNote: "fastest way to reach me"
+  };
+
+  function esc(s){ return String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+
+  function printLine(text, cls){
+    const line = document.createElement('div');
+    line.className = 'out-line' + (cls ? ' ' + cls : '');
+    line.textContent = text;
+    cmdOutput.appendChild(line);
+    cmdOutput.scrollTop = cmdOutput.scrollHeight;
+  }
+  function printHTML(html, cls){
+    const line = document.createElement('div');
+    line.className = 'out-line' + (cls ? ' ' + cls : '');
+    line.innerHTML = html;
+    cmdOutput.appendChild(line);
+    cmdOutput.scrollTop = cmdOutput.scrollHeight;
+  }
+  function printKV(key, val){
+    printHTML(`<span class="k">${esc(key)}</span>  ${esc(val)}`, 'tight');
+  }
+
+  const commands = {
+    help(){
+      printHTML("available commands:", 'tight');
+      const list = [
+        ["about","who I am"], ["skills","my tech stack"], ["experience","where I've worked"],
+        ["education","the degrees"], ["contact","get in touch"], ["socials","where to find me"],
+        ["resume","the CV"], ["neofetch","me, ascii style"], ["coffee","fuel status"],
+        ["joke","a dev joke"], ["date","current time"], ["clear","wipe the screen"]
+      ];
+      list.forEach(([c,d]) => printHTML(`<span class="k">${c.padEnd(11,' ').replace(/ /g,'&nbsp;')}</span> ${esc(d)}`, 'tight'));
+      printHTML(`<span class="accent">profile data:</span> ${esc(ME.dataAsOf)}`, 'tight');
+      printHTML(`<span class="accent">tip:</span> use &uarr;/&darr; for history, Tab to autocomplete`, 'tight');
+    },
+    about(){
+      printHTML(`hi — I'm <span class="v">${esc(ME.name)}</span>, a <span class="v">${esc(ME.role)}</span>.`);
+      printLine(ME.summary, 'tight');
+      printHTML(`<span class="k">based in</span> ${esc(ME.location)}  ·  <span class="k">exp</span> ${esc(ME.years)}`, 'tight');
+      printHTML(`<span class="k">updated</span>  ${esc(ME.dataAsOf)}`, 'tight');
+      printHTML(`<span class="accent">try:</span> 'experience', 'skills', or 'contact'.`, 'tight');
+    },
+    skills(){
+      printHTML("skills & stack:", 'tight');
+      Object.entries(ME.skills).forEach(([k, v]) =>
+        printHTML(`<span class="k">${esc(k)}</span> — ${esc(v)}`, 'tight'));
+    },
+    experience(){
+      printHTML("work history:", 'tight');
+      ME.experience.forEach(job => {
+        printHTML(`<span class="v">${esc(job.role)}</span> @ <span class="k">${esc(job.co)}</span>`, 'tight');
+        printHTML(`<span class="accent">${esc(job.when)}</span> · ${esc(job.loc)}`, 'tight');
+        job.points.forEach(p => printHTML(`<span class="k">•</span> ${esc(p)}`, 'tight'));
+      });
+    },
+    education(){
+      printHTML("education:", 'tight');
+      ME.education.forEach(e =>
+        printHTML(`<span class="v">${esc(e.deg)}</span> — ${esc(e.school)} <span class="accent">(${esc(e.when)})</span>`, 'tight'));
+    },
+    socials(){
+      printHTML(`<span class="k">github</span>   <a href="${esc(ME.github)}" target="_blank" rel="noopener">github.com/kitparl</a>`, 'tight');
+      printHTML(`<span class="k">linkedin</span> <a href="${esc(ME.linkedin)}" target="_blank" rel="noopener">pranshusinghbisht</a>`, 'tight');
+      printHTML(`<span class="k">whatsapp</span> <a href="${esc(ME.whatsapp)}" target="_blank" rel="noopener">message me</a>`, 'tight');
+    },
+    contact(){
+      printHTML(`<span class="k">email</span>    <a href="mailto:${esc(ME.email)}">${esc(ME.email)}</a>`, 'tight');
+      printHTML(`<span class="k">whatsapp</span> <a href="${esc(ME.whatsapp)}" target="_blank" rel="noopener">+91 7522023037</a>`, 'tight');
+      printHTML(`<span class="k">github</span>   <a href="${esc(ME.github)}" target="_blank" rel="noopener">github.com/kitparl</a>`, 'tight');
+      printHTML(`<span class="k">linkedin</span> <a href="${esc(ME.linkedin)}" target="_blank" rel="noopener">pranshusinghbisht</a>`, 'tight');
+      printHTML(`<span class="k">based</span>    ${esc(ME.location)}`, 'tight');
+    },
+    resume(){
+      printLine("resume: drop your PDF/Drive link here to make it downloadable.", 'tight');
+      printHTML(`or just ask on <a href="${esc(ME.whatsapp)}" target="_blank" rel="noopener">whatsapp</a> and I'll send it.`, 'tight');
+    },
+    neofetch(){
+      const art = ["  ____  ", " |  _ \\ ", " | |_) |", " |  __/ ", " |_|    "];
+      const info = [
+        `<span class="k">user</span>@<span class="k">links</span>`,
+        `<span class="k">host</span>   ${esc(ME.name)}`,
+        `<span class="k">role</span>   ${esc(ME.role)}`,
+        `<span class="k">loc</span>    ${esc(ME.location)}`,
+        `<span class="k">exp</span>    ${esc(ME.years)} · payments & fintech`,
+        `<span class="k">data</span>   ${esc(ME.dataAsOf)}`,
+        `<span class="k">uptime</span> shipping real-money flows`
+      ];
+      const rows = Math.max(art.length, info.length);
+      for (let i = 0; i < rows; i++){
+        const a = (art[i] || "       ").replace(/ /g,'&nbsp;');
+        const b = info[i] || "";
+        printHTML(`<span class="accent">${a}</span>&nbsp;&nbsp;${b}`, 'ascii');
+      }
+    },
+    coffee(){ printLine("☕ brewing... done. productivity +10, patience -2.", 'tight'); },
+    joke(){ printLine(jokes[Math.floor(Math.random() * jokes.length)], 'tight'); },
+    date(){
+      printHTML(`<span class="k">profile</span> ${esc(ME.dataAsOf)}`, 'tight');
+      printLine(new Date().toString(), 'tight');
+    },
+    whoami(){ commands.about(); },
+    bio(){ commands.about(); },
+    stack(){ commands.skills(); },
+    work(){ commands.experience(); },
+    exp(){ commands.experience(); },
+    edu(){ commands.education(); },
+    cv(){ commands.resume(); },
+    links(){ commands.socials(); },
+    email(){ commands.contact(); },
+    ls(){ printLine("about  skills  experience  education  contact  socials  resume", 'tight'); }
+  };
+
+  function runCommand(raw){
+    const parts = raw.trim().split(/\s+/);
+    const cmd = (parts[0] || '').toLowerCase();
+
+    if (cmd === 'clear'){
+      cmdOutput.innerHTML = '';
+      return;
+    }
+
+    cmdOutput.innerHTML = '';
+    if (!cmd) return;
+
+    printLine(raw, 'echo');
+
+    if (cmd === 'echo'){
+      printLine(parts.slice(1).join(' '), 'tight');
+    } else if (cmd === 'sudo'){
+      printLine("nice try. you're a visitor here, not root. (respect the hustle)", 'tight');
+    } else if (cmd === 'exit' || cmd === 'quit'){
+      printLine("nope. you're stuck here with me.", 'tight');
+    } else if (cmd === 'history'){
+      if (!history.length) printLine("(no history yet)", 'tight');
+      history.forEach((h, i) => printHTML(`<span class="k">${i+1}</span>  ${esc(h)}`, 'tight'));
+    } else if (commands[cmd]){
+      commands[cmd]();
+    } else {
+      printHTML(`command not found: '${esc(cmd)}' — try '<span class="k">help</span>'`, 'err');
+    }
+  }
+
+  // ---------- history + tab completion ----------
+  const history = [];
+  let histIndex = -1;
+  const completions = Object.keys(commands).concat(['echo','sudo','history','exit','clear']);
+
+  cmdInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter'){
+      const val = cmdInput.value;
+      if (val.trim() !== ''){
+        history.push(val);
+        histIndex = history.length;
+        runCommand(val);
+        cmdInput.value = '';
+      }
+    } else if (e.key === 'ArrowUp'){
+      e.preventDefault();
+      if (histIndex > 0){ histIndex--; cmdInput.value = history[histIndex]; }
+    } else if (e.key === 'ArrowDown'){
+      e.preventDefault();
+      if (histIndex < history.length - 1){ histIndex++; cmdInput.value = history[histIndex]; }
+      else { histIndex = history.length; cmdInput.value = ''; }
+    } else if (e.key === 'Tab'){
+      e.preventDefault();
+      const cur = cmdInput.value.trim().toLowerCase();
+      if (cur){
+        const match = completions.filter(c => c.startsWith(cur));
+        if (match.length === 1){ cmdInput.value = match[0]; }
+        else if (match.length > 1){ printHTML(match.join('&nbsp;&nbsp;'), 'tight'); }
+      }
+    }
+  });
+</script>
+
+</body>
+</html>
